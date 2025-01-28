@@ -18,3 +18,5 @@ rm -rf ./$DIST_DIR/
 mkdir ./$DIST_DIR/
 build x86_64-unknown-linux-musl cargo release $PROGRAM
 build x86_64-pc-windows-msvc cross release $PROGRAM.exe
+build x86_64-apple-darwin cross darwin-release $PROGRAM
+build aarch64-apple-darwin cross darwin-release $PROGRAM
