@@ -1,6 +1,8 @@
+use std::{fs::File, io::Write};
+
 use clap::{command, Arg, Command};
 use color_eyre::eyre::{Context, Result};
-use csv::QuoteStyle;
+use csv::{QuoteStyle, Terminator};
 use rand::Rng;
 use serde::Serialize;
 
@@ -26,9 +28,14 @@ fn main() -> Result<()> {
     let limit = matches.get_one::<usize>("limit").unwrap_or(&default_limit);
     let csv = matches.get_one::<String>("csv");
     if let Some(path) = csv {
+        let mut f = File::create(path)?;
+        f.write_all(r#""id","num","aeskey""#.as_bytes())?;
+        f.write_all("\r\n".as_bytes())?;
         let mut wtr = csv::WriterBuilder::new()
-            .quote_style(QuoteStyle::NonNumeric)
-            .from_path(path)?;
+            .quote_style(QuoteStyle::Necessary)
+            .has_headers(false)
+            .terminator(Terminator::CRLF)
+            .from_writer(f);
         for i in 0..*limit {
             let secret = rand::rng().random::<[u8; 32]>();
             wtr.serialize(Record {
