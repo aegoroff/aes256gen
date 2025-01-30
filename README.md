@@ -23,7 +23,7 @@ Options:
   -h, --help            Print help
   -V, --version         Print version
 ```
-**EXAMPLES**
+## EXAMPLES
 
 Generate 3 aes codes into file named `aes.csv` that will be placed in the current directory.
 ```shell
