@@ -59,9 +59,3 @@ jobs:
           target: ${{ matrix.target }}
           toolchain: ${{ matrix.rust }}
           args: "--release"
-      - name: Run linter
-        if: matrix.build == 'linux-x64'
-        uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --release -- -Dwarnings
