@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RELEASE_BIN: aes256gen
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [linux-x64, linux-aarch64, macos-x64, macos-arm64, windows]
+        include:
+          - build: linux-x64
+            os: ubuntu-22.04
+            rust: stable
+            target: x86_64-unknown-linux-musl
+          - build: linux-aarch64
+            os: ubuntu-latest
+            rust: stable
+            target: aarch64-unknown-linux-musl
+          - build: macos-x64
+            os: macos-latest
+            rust: stable
+            target: x86_64-apple-darwin
+          - build: macos-arm64
+            os: macos-latest
+            rust: stable
+            target: aarch64-apple-darwin
+          - build: windows
+            os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-msvc
+
+    steps:
+      - name: Update rust
+        if: matrix.build == 'linux-x64'
+        run: rustup update
+      - uses: actions/checkout@v4
+      - name: Build
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          command: "build"
+          target: ${{ matrix.target }}
+          toolchain: ${{ matrix.rust }}
+          args: "--release --bin editorconfiger --features=\"build-binary\""
+          strip: true
+      - name: Run tests
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          command: "test"
+          target: ${{ matrix.target }}
+          toolchain: ${{ matrix.rust }}
+          args: "--release"
+      - name: Run linter
+        if: matrix.build == 'linux-x64'
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features --bin editorconfiger --release -- -Dwarnings
