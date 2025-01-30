@@ -40,7 +40,7 @@ footer = ""
 trim = true
 # postprocessors
 postprocessors = [
-  { pattern = '\$REPO', replace = "https://github.com/aegoroff/editorconfiger" },
+  { pattern = '\$REPO', replace = "https://github.com/aegoroff/aes256gen" },
 ]
 
 [git]
