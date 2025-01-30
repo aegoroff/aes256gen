@@ -12,6 +12,7 @@ extern crate clap;
 const LIMIT_HELP: &str = "The maximum number of codes to generate.";
 const CSV_HELP: &str = "Path to comma separated file to store results into";
 const DEFAULT_LIMIT: &str = "10";
+const KEY_LEN: usize = 32;
 
 #[derive(Debug, Serialize)]
 struct Record {
@@ -37,7 +38,7 @@ fn main() -> Result<()> {
             .terminator(Terminator::CRLF)
             .from_writer(f);
         for i in 0..*limit {
-            let secret = rand::rng().random::<[u8; 32]>();
+            let secret = generate_secret();
             wtr.serialize(Record {
                 id: i + 1,
                 num: String::new(),
@@ -48,11 +49,15 @@ fn main() -> Result<()> {
         wtr.flush()?;
     } else {
         for _ in 0..*limit {
-            let secret = rand::rng().random::<[u8; 32]>();
+            let secret = generate_secret();
             println!("{}", hex::encode_upper(secret));
         }
     }
     Ok(())
+}
+
+fn generate_secret() -> [u8; KEY_LEN] {
+    rand::rng().random::<[u8; KEY_LEN]>()
 }
 
 fn build_cli() -> Command {
