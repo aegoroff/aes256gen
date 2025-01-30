@@ -42,7 +42,7 @@ fn main() -> Result<()> {
             wtr.serialize(Record {
                 id: i + 1,
                 num: String::new(),
-                aeskey: hex::encode_upper(secret),
+                aeskey: secret,
             })
             .wrap_err_with(|| "Failed to serialize record")?;
         }
@@ -50,14 +50,14 @@ fn main() -> Result<()> {
     } else {
         for _ in 0..*limit {
             let secret = generate_secret();
-            println!("{}", hex::encode_upper(secret));
+            println!("{secret}");
         }
     }
     Ok(())
 }
 
-fn generate_secret() -> [u8; KEY_LEN] {
-    rand::rng().random::<[u8; KEY_LEN]>()
+fn generate_secret() -> String {
+    hex::encode_upper(rand::rng().random::<[u8; KEY_LEN]>())
 }
 
 fn build_cli() -> Command {
