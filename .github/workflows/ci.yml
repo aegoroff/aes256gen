@@ -50,7 +50,7 @@ jobs:
           command: "build"
           target: ${{ matrix.target }}
           toolchain: ${{ matrix.rust }}
-          args: "--release --bin editorconfiger --features=\"build-binary\""
+          args: "--release"
           strip: true
       - name: Run tests
         uses: houseabsolute/actions-rust-cross@v0
