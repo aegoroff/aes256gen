@@ -82,3 +82,19 @@ fn limit_arg() -> Arg {
 fn csv_file_path_arg() -> Arg {
     arg!(-c --csv <PATH>).required(false).help(CSV_HELP)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn generate_secret_test() {
+        // Arrange
+
+        // Act
+        let secret = generate_secret();
+
+        // Assert
+        assert_eq!(64, secret.len());
+    }
+}
