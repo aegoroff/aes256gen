@@ -19,6 +19,7 @@ Usage: aes256gen [OPTIONS]
 
 Options:
   -l, --limit <NUMBER>  The maximum number of codes to generate. [default: 10]
+      --bugreport       Collect information about the system and the environment that users can send along with a bug report
   -c, --csv <PATH>      Path to comma separated file to store results into
   -h, --help            Print help
   -V, --version         Print version
