@@ -9,7 +9,7 @@ edition = "2021"
 rand = "0.9.0"
 hex = "0.4.3"
 csv = "1.3.1"
-clap = { version = "4.5.27", features = ["std", "color", "cargo"] }
+clap = { version = "4.5.30", features = ["std", "color", "cargo"] }
 serde = { version = "1.0.217", features = ["derive"] }
 color-eyre = "0.6.3"
 bugreport = "0.5.1"
