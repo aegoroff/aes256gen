@@ -1,6 +1,11 @@
+use bugreport::{
+    bugreport,
+    collector::{CompileTimeInformation, EnvironmentVariables, OperatingSystem, SoftwareVersion},
+    format::Markdown,
+};
 use std::{fs::File, io::Write};
 
-use clap::{command, Arg, Command};
+use clap::{command, Arg, ArgAction, Command};
 use color_eyre::eyre::{Context, Result};
 use csv::{QuoteStyle, Terminator};
 use rand::Rng;
@@ -25,6 +30,12 @@ fn main() -> Result<()> {
     color_eyre::install()?;
     let app = build_cli();
     let matches = app.get_matches();
+    let bugreport = matches.get_flag("bugreport");
+    if bugreport {
+        print_bugreport();
+        return Ok(());
+    }
+
     let default_limit: usize = DEFAULT_LIMIT.parse().unwrap_or_default();
     let limit = matches.get_one::<usize>("limit").unwrap_or(&default_limit);
     let csv = matches.get_one::<String>("csv");
@@ -68,7 +79,17 @@ fn build_cli() -> Command {
         .author(crate_authors!("\n"))
         .about(crate_description!())
         .arg(limit_arg())
+        .arg(bugreport_arg())
         .arg(csv_file_path_arg())
+}
+
+fn print_bugreport() {
+    bugreport!()
+        .info(SoftwareVersion::default())
+        .info(OperatingSystem::default())
+        .info(EnvironmentVariables::list(&["SHELL", "TERM"]))
+        .info(CompileTimeInformation::default())
+        .print::<Markdown>();
 }
 
 fn limit_arg() -> Arg {
@@ -77,6 +98,13 @@ fn limit_arg() -> Arg {
         .default_value(DEFAULT_LIMIT)
         .value_parser(value_parser!(usize))
         .help(LIMIT_HELP)
+}
+
+fn bugreport_arg() -> Arg {
+    arg!(--bugreport)
+        .required(false)
+        .action(ArgAction::SetTrue)
+        .help("Collect information about the system and the environment that users can send along with a bug report")
 }
 
 fn csv_file_path_arg() -> Arg {
