@@ -39,6 +39,11 @@ fn main() -> Result<()> {
     let default_limit: usize = DEFAULT_LIMIT.parse().unwrap_or_default();
     let limit = matches.get_one::<usize>("limit").unwrap_or(&default_limit);
     let csv = matches.get_one::<String>("csv");
+    let records = (1..=*limit).map(|id| Record {
+        id,
+        num: String::new(),
+        aeskey: generate_secret(),
+    });
     if let Some(path) = csv {
         let mut f = File::create(path)?;
         f.write_all(r#""id","num","aeskey""#.as_bytes())?;
@@ -48,20 +53,14 @@ fn main() -> Result<()> {
             .has_headers(false)
             .terminator(Terminator::CRLF)
             .from_writer(f);
-        for i in 0..*limit {
-            let secret = generate_secret();
-            wtr.serialize(Record {
-                id: i + 1,
-                num: String::new(),
-                aeskey: secret,
-            })
-            .wrap_err_with(|| "Failed to serialize record")?;
+        for r in records {
+            wtr.serialize(r)
+                .wrap_err_with(|| "Failed to serialize record")?;
         }
         wtr.flush()?;
     } else {
-        for _ in 0..*limit {
-            let secret = generate_secret();
-            println!("{secret}");
+        for r in records {
+            println!("{}", r.aeskey);
         }
     }
     Ok(())
