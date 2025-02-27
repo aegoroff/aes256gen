@@ -5,7 +5,7 @@ use bugreport::{
 };
 use std::{fs::File, io::Write};
 
-use clap::{command, Arg, ArgAction, Command};
+use clap::{Arg, ArgAction, Command, command};
 use color_eyre::eyre::{Context, Result};
 use csv::{QuoteStyle, Terminator};
 use rand::Rng;

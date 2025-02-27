@@ -3,7 +3,7 @@ name = "aes256gen"
 description = "AES256 encrypt codes generator for Anytone DMR radio"
 authors = ["Alexander Egorov <egoroff@gmail.com>"]
 version = "0.1.1"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 rand = "0.9.0"
